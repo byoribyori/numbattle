@@ -157,6 +157,7 @@
 </head>
 
 <body>
+  <div id="style"></div>
   <div id="area">
     <h1>NUMBATTLE</h1>
     <div class="li">
@@ -212,6 +213,10 @@
     var turn = 0;
     var my_win = 0;
     var opponent_win = 0;
+
+      if (navigator.userAgent.match(/(iPhone|iPad|iPod|Android)/)) {
+        d('style').innerHTML= '<style>.panel{width:254px}</style>';
+      }
 
     function d(e) {
       return document.getElementById(e);
