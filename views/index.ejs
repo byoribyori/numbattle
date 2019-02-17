@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>NUMBATTLE</title>
+  <style>
+    body {
+      background-color: lightblue;
+    }
+
+    h1 {
+      width: 350px;
+      font-size: 3em;
+      text-align: center;
+      margin-right: auto;
+      margin-left: auto;
+    }
+
+    .li {
+      width: 500px;
+      font-size: 1.4em;
+      margin-right: auto;
+      margin-left: auto;
+    }
+
+    input {
+      width: 250px;
+      height: 30px;
+      font-size: 1.4em;
+      display: block;
+      margin-right: auto;
+      margin-left: auto;
+    }
+
+    .start {
+      margin-right: auto;
+      margin-left: auto;
+      background-color: #fc6e51;
+      color: white;
+      width: 350px;
+      font-size: 1.2em;
+      display: block;
+      text-decoration: none;
+      transition: 0.4s;
+      box-shadow: 5px 6px 9px black;
+      padding: 1px;
+      height: 33px;
+    }
+
+    .start:hover {
+      background-color: rgb(255, 208, 0);
+      color: black;
+      box-shadow: none;
+      font-size: 1.2em;
+    }
+
+    .wait {
+      width: 360px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
+    }
+
+    .table {
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: 8%;
+      background-color: gray;
+    }
+
+    th {
+      width: 65px;
+      height: 65px;
+    }
+
+    .tr0 {
+      color: red;
+      background-color: rgb(253, 193, 193);
+      font-size: 2.7em;
+    }
+
+    .tr1 {
+      background-color: white;
+      font-size: 2.7em;
+    }
+
+    .tr2 {
+      color: blue;
+      background-color: rgb(193, 193, 253);
+      font-size: 2.7em;
+    }
+
+    .Rname {
+      height: auto;
+      background-color: rgb(253, 193, 193);
+      font-size: 1.7em;
+    }
+
+    .Bname {
+      height: auto;
+      background-color: rgb(193, 193, 253);
+      font-size: 1.7em;
+    }
+
+    .panel {
+      width: 1300px;
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: 7%;
+    }
+
+    .Ruse {
+      background-color: black;
+      color: red;
+      float: left;
+    }
+
+    .Buse {
+      background-color: black;
+      color: blue;
+      float: right;
+    }
+
+    .use {
+      width: 80px;
+      height: 80px;
+      font-size: 50px;
+      background-color: blanchedalmond;
+    }
+
+    .used {
+      width: 80px;
+      height: 80px;
+      font-size: 50px;
+      background-color: gray;
+      color: black;
+    }
+
+    .form {
+      width: 200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .button {
+      width: 200px;
+      height: 60px;
+      font-size: 2em;
+      margin-left: auto;
+      margin-right: auto;
+      background-color: lightgreen;
+      color: #00B7FF;
+      border-radius: 50%;
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+</head>
+
+<body>
+  <div id="area">
+    <h1>NUMBATTLE</h1>
+    <div class="li">
+      <li>1つずつ数字を選ぶ</li>
+      <li>大きい数字を出したほうが勝利</li>
+      <li>9ターンあり、1~9までの数字を1回ずつ使う</li>
+      <li>勝利数が多いほうが勝ち!!</li>
+    </div>
+    <p><input type="text" id="name" placeholder="ユーザーネーム" value="<%= name %>" maxlength="10" autocomplete="off"></p>
+    <p id="wait" class="wait"><button id="start" class="start">start</button></p>
+  </div>
+  <div id="panel" class="panel" style="display:none">
+    <table class="Ruse">
+      <tr>
+        <th id="use" class="use">1</th>
+        <th id="use" class="use">2</th>
+        <th id="use" class="use">3</th>
+      </tr>
+      <tr>
+        <th id="use" class="use">4</th>
+        <th id="use" class="use">5</th>
+        <th id="use" class="use">6</th>
+      </tr>
+      <tr>
+        <th id="use" class="use">7</th>
+        <th id="use" class="use">8</th>
+        <th id="use" class="use">9</th>
+      </tr>
+    </table>
+    <table class="Buse">
+      <tr>
+        <th id="use" class="use">1</th>
+        <th id="use" class="use">2</th>
+        <th id="use" class="use">3</th>
+      </tr>
+      <tr>
+        <th id="use" class="use">4</th>
+        <th id="use" class="use">5</th>
+        <th id="use" class="use">6</th>
+      </tr>
+      <tr>
+        <th id="use" class="use">7</th>
+        <th id="use" class="use">8</th>
+        <th id="use" class="use">9</th>
+      </tr>
+    </table>
+  </div>
+
+  <script>
+    var socket = io();
+    var my_id, opponent_id, name, opponent_name, number, opponent_number;
+    var ok = false;
+    var turn = 0;
+    var my_win = 0;
+    var opponent_win = 0;
+
+    function d(e) {
+      return document.getElementById(e);
+    }
+
+    socket.on('connect', () => {
+      console.log('接続');
+    });
+
+    socket.on('wait', (socket_id) => {
+      my_id = socket_id;
+      d('wait').innerHTML = '<b style="font-size:2em">相手を待っています...</b>';
+    });
+
+    d('start').onclick = () => {
+      name = d('name').value ? d('name').value : '匿名';
+      socket.emit('ready', name);
+    }
+
+    socket.on('start', (opponent) => {
+      opponent_id = opponent[0];
+      opponent_name = opponent[1];
+      d('panel').style = "";
+      var table = `<table class="table"><tr><th id="Rname" class="Rname" colspan="9"></th></tr>`;
+      for (let i = 0; i < 3; i++) {
+        table += '<tr>';
+        for (let j = 0; j < 9; j++) {
+          table += `<th id="th${i}${j}" class="tr${i}"></th>`;
+        }
+        table += '</tr>';
+      }
+      table += `<tr><th id="Bname" class="Bname" colspan="9"></th></tr></table>`;
+      d('area').innerHTML = table;
+      for (let i = 0; i < name.length; i++) {
+        d('Rname').innerText += name[i];
+      }
+      for (let i = 0; i < opponent_name.length; i++) {
+        d('Bname').innerText += opponent_name[i];
+      }
+      for (let i = 29; i < 38; i++) {
+        document.getElementsByTagName('th')[i].onclick = () => { click(i - 28) };
+      }
+      ok = true;
+    });
+
+    function click(e) {
+      if (ok) {
+        socket.emit('number', [opponent_id, e]);
+        number = e;
+        document.getElementsByTagName('th')[e + 28].style = "background-color:rgb(253,193,193)";
+        document.getElementsByTagName('th')[e + 28].onclick = () => { };
+        ok = false;
+        check();
+      }
+    }
+
+    socket.on('number', (num) => {
+      opponent_number = num;
+      check();
+    });
+
+    function check() {
+      if (number && opponent_number) {
+        document.getElementsByTagName('th')[number + 28].className = "used";
+        document.getElementsByTagName('th')[number + 28].style = "";
+        document.getElementsByTagName('th')[opponent_number + 37].className = "used";
+        document.getElementsByTagName('th')[opponent_number + 37].style = "";
+        d(`th0${turn}`).innerText = number;
+        d(`th2${turn}`).innerText = opponent_number;
+        if (number > opponent_number) {
+          var win = ['red', '●'];
+          my_win++;
+        } else if (number < opponent_number) {
+          var win = ['blue', '●'];
+          opponent_win++;
+        } else {
+          var win = ['black', '△'];
+        }
+        d(`th1${turn}`).innerHTML = `<span style="color:${win[0]}">${win[1]}</span>`;
+        if (turn === 8) {
+          setTimeout(() => {
+            if (my_win > opponent_win) {
+              alert('あなたの勝ち');
+            } else if (my_win < opponent_win) {
+              alert('あなたの負け');
+            } else {
+              alert('引き分け');
+            }
+            d('panel').innerHTML +=
+              `<div class="form">
+              <form action="/" method="POST">
+              <input type="hidden" name="name" value="${name}">
+              <button class="button" type="submit">もう一度</button>
+              </form>
+              </div>`;
+          }, 200)
+        } else {
+          number = null;
+          opponent_number = null;
+          turn++;
+          ok = true;
+        }
+      }
+    }
+
+  </script>
+</body>
+
+</html>

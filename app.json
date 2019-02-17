@@ -1,0 +1,7 @@
+{
+  "name": "NUMBATTLE",
+  "description": "NUMBATTLE",
+  "logo": "",
+  "keywords": ["node"],
+  "image": "heroku/nodejs"
+}
