@@ -96,16 +96,23 @@ var wait_data = null;
 io.on('connection', (socket) => {
   socket.on('ready', (name) => {
     console.log(socket.id);
-    if(!wait){
-      socket.emit('wait',socket.id);
-      wait_data = [socket.id,name];
-    }else{
-      io.to(wait_data[0]).emit('start',[socket.id,name]);
-      socket.emit('start',wait_data);
+    if (!wait) {
+      socket.emit('wait', socket.id);
+      wait_data = [socket.id, name];
+    } else {
+      io.to(wait_data[0]).emit('start', [socket.id, name]);
+      socket.emit('start', wait_data);
     }
     wait = !wait;
   });
-  socket.on('number',(number)=>{
-    io.to(number[0]).emit('number',number[1]);
+
+  socket.on('cancel', () => {
+    wait = false;
+    wait_data = null;
   });
+
+  socket.on('number', (number) => {
+    io.to(number[0]).emit('number', number[1]);
+  });
+
 });

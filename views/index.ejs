@@ -167,7 +167,8 @@
       <li>勝利数が多いほうが勝ち!!</li>
     </div>
     <p><input type="text" id="name" placeholder="ユーザーネーム" value="<%= name %>" maxlength="10" autocomplete="off"></p>
-    <p id="wait" class="wait"><button id="start" class="start">start</button></p>
+    <p class="wait"><button id="start" class="start">start</button><br>
+      <span id="wait" style="display:none"><b style="font-size:2em">相手を待っています...</b></span></p>
   </div>
   <div id="panel" class="panel" style="display:none">
     <table class="Ruse">
@@ -210,33 +211,38 @@
     var socket = io();
     var my_id, opponent_id, name, opponent_name, number, opponent_number;
     var ok = false;
+    var ready = false;
     var turn = 0;
     var my_win = 0;
     var opponent_win = 0;
-
-      if (navigator.userAgent.match(/(iPhone|iPad|iPod|Android)/)) {
-        d('style').innerHTML= '<style>.panel{width:254px}</style>';
-      }
 
     function d(e) {
       return document.getElementById(e);
     }
 
-    socket.on('connect', () => {
-      console.log('接続');
-    });
-
     socket.on('wait', (socket_id) => {
       my_id = socket_id;
-      d('wait').innerHTML = '<b style="font-size:2em">相手を待っています...</b>';
+      d('wait').style = "";
     });
 
     d('start').onclick = () => {
-      name = d('name').value ? d('name').value : '匿名';
-      socket.emit('ready', name);
+      if (!ready) {
+        name = d('name').value ? d('name').value : '匿名';
+        socket.emit('ready', name);
+        d('start').innerText = "cancel";
+        ready = true;
+      } else {
+        socket.emit('cancel');
+        d('start').innerText = "start";
+        d('wait').style = "display:none";
+        ready = false;
+      }
     }
 
     socket.on('start', (opponent) => {
+      if (navigator.userAgent.match(/(iPhone|iPad|iPod|Android)/)) {
+      d('style').innerHTML = '<style>.panel{width:254px}</style>';
+    }
       opponent_id = opponent[0];
       opponent_name = opponent[1];
       d('panel').style = "";
