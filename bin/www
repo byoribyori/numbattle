@@ -94,8 +94,8 @@ var wait = false;
 var wait_data = null;
 
 io.on('connection', (socket) => {
+  if(wait) socket.emit('come on');
   socket.on('ready', (name) => {
-    console.log(socket.id);
     if (!wait) {
       socket.emit('wait', socket.id);
       wait_data = [socket.id, name];

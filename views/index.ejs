@@ -11,7 +11,7 @@
     h1 {
       width: 350px;
       font-size: 3em;
-      font-family: 'MS Serif','arial black',sans-serif;
+      font-family: 'MS Serif', 'arial black', sans-serif;
       text-align: center;
       margin-right: auto;
       margin-left: auto;
@@ -41,7 +41,7 @@
       color: white;
       width: 350px;
       font-size: 1.2em;
-      font-family: 'arial black',sans-serif;
+      font-family: 'arial black', sans-serif;
       font-weight: 600;
       display: block;
       text-decoration: none;
@@ -56,6 +56,10 @@
       color: black;
       box-shadow: none;
       font-size: 1.2em;
+    }
+
+    b {
+      font-size: 2em;
     }
 
     .wait {
@@ -119,14 +123,14 @@
       background-color: black;
       color: red;
       float: left;
-      font-family: 'arial black','Franklin Gothic Medium',sans-serif;
+      font-family: 'arial black', 'Franklin Gothic Medium', sans-serif;
     }
 
     .Buse {
       background-color: black;
       color: blue;
       float: right;
-      font-family: 'arial black','Franklin Gothic Medium',sans-serif;
+      font-family: 'arial black', 'Franklin Gothic Medium', sans-serif;
     }
 
     .use {
@@ -177,7 +181,8 @@
     </div>
     <p><input type="text" id="name" placeholder="ユーザーネーム" value="<%= name %>" maxlength="10" autocomplete="off"></p>
     <p class="wait"><button id="start" class="start">start</button><br>
-      <span id="wait" style="display:none"><b style="font-size:2em">相手を待っています...</b></span></p>
+      <b id="wait" style="display: none">相手を待っています...</b>
+      <b id="wait?" style="display: none">待っている人がいます。</b></p>
   </div>
   <div id="panel" class="panel" style="display:none">
     <table class="Ruse">
@@ -234,7 +239,12 @@
       d('wait').style = "";
     });
 
+    socket.on('come on', () => {
+      d('wait?').style = "";
+    });
+
     d('start').onclick = () => {
+      d('wait?').style = "display:none";
       if (!ready) {
         name = d('name').value ? d('name').value : '匿名';
         socket.emit('ready', name);
@@ -250,8 +260,8 @@
 
     socket.on('start', (opponent) => {
       if (navigator.userAgent.match(/(iPhone|iPad|iPod|Android)/)) {
-      d('style').innerHTML = '<style>.panel{width:254px}</style>';
-    }
+        d('style').innerHTML = '<style>.panel{width:254px}</style>';
+      }
       opponent_id = opponent[0];
       opponent_name = opponent[1];
       d('panel').style = "";
