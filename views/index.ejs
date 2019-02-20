@@ -6,6 +6,9 @@
   <style>
     body {
       background-color: lightblue;
+      width: 1300px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     h1 {
@@ -59,14 +62,28 @@
     }
 
     b {
-      font-size: 2em;
+      font-size: 1.8em;
     }
 
     .wait {
-      width: 360px;
+      width: 500px;
       margin-left: auto;
       margin-right: auto;
       text-align: center;
+    }
+
+    .info {
+      color: blue;
+      font-size: 1.2em;
+      margin-right: 50%;
+    }
+
+    .latest {
+      width: auto;
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: 30px;
+      border: red 2.5px solid;
     }
 
     .table {
@@ -180,9 +197,12 @@
       <li>勝利数が多いほうが勝ち!!</li>
     </div>
     <p><input type="text" id="name" placeholder="ユーザーネーム" value="<%= name %>" maxlength="10" autocomplete="off"></p>
-    <p class="wait"><button id="start" class="start">start</button><br>
-      <b id="wait" style="display: none">相手を待っています...</b>
-      <b id="wait?" style="display: none">待っている人がいます。</b></p>
+    <div class="wait"><button id="start" class="start">start</button>
+      <div class="latest">
+        <div class="info">最新の状況</div>
+        <b id="wait"></b>
+      </div>
+    </div>
   </div>
   <div id="panel" class="panel" style="display:none">
     <table class="Ruse">
@@ -236,15 +256,25 @@
 
     socket.on('wait', (socket_id) => {
       my_id = socket_id;
-      d('wait').style = "";
     });
 
-    socket.on('come on', () => {
-      d('wait?').style = "";
+    socket.on('info', (wait_name) => {
+      if (wait_name) {
+        d('wait').innerText = `${wait_name} が待っています`;
+      } else {
+        d('wait').innerText = '待っている人はいません';
+      }
+    });
+
+    socket.on('wait_name', (wait_name) => {
+      if(d('wait'))d('wait').innerText = `${wait_name} が待っています`;
+    });
+
+    socket.on('wait_end', () => {
+      if(d('wait'))d('wait').innerText = '待っている人はいません';
     });
 
     d('start').onclick = () => {
-      d('wait?').style = "display:none";
       if (!ready) {
         name = d('name').value ? d('name').value : '匿名';
         socket.emit('ready', name);
@@ -253,7 +283,6 @@
       } else {
         socket.emit('cancel');
         d('start').innerText = "start";
-        d('wait').style = "display:none";
         ready = false;
       }
     }

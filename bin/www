@@ -91,28 +91,31 @@ function onListening() {
 
 var io = require('socket.io')(server);
 var wait = false;
-var wait_data = null;
+var wait_data = [null, null];
 
 io.on('connection', (socket) => {
-  if(wait) socket.emit('come on');
+  socket.emit('info', wait_data[1]);
   socket.on('ready', (name) => {
     if (!wait) {
       socket.emit('wait', socket.id);
+      io.emit('wait_name', name);
       wait_data = [socket.id, name];
     } else {
       io.to(wait_data[0]).emit('start', [socket.id, name]);
       socket.emit('start', wait_data);
+      io.emit('wait_end');
+      wait_data = [null, null];
     }
     wait = !wait;
   });
 
   socket.on('cancel', () => {
     wait = false;
-    wait_data = null;
+    wait_data = [null, null];;
+    io.emit('wait_end');
   });
 
   socket.on('number', (number) => {
     io.to(number[0]).emit('number', number[1]);
   });
-
 });
