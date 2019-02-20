@@ -118,4 +118,8 @@ io.on('connection', (socket) => {
   socket.on('number', (number) => {
     io.to(number[0]).emit('number', number[1]);
   });
+
+  socket.on('msg', (msg) => {
+    io.to(msg[0]).emit('msg', msg[1]);
+  });
 });

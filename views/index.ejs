@@ -6,7 +6,6 @@
   <style>
     body {
       background-color: lightblue;
-      width: 1300px;
       margin-left: auto;
       margin-right: auto;
     }
@@ -61,7 +60,7 @@
       font-size: 1.2em;
     }
 
-    b {
+    .b {
       font-size: 1.8em;
     }
 
@@ -89,8 +88,8 @@
     .table {
       margin-left: auto;
       margin-right: auto;
-      margin-top: 8%;
       background-color: gray;
+      font-family: 'arial black', 'Franklin Gothic Medium', sans-serif;
     }
 
     th {
@@ -106,7 +105,7 @@
 
     .tr1 {
       background-color: white;
-      font-size: 2.7em;
+      font-size: 2.6em;
     }
 
     .tr2 {
@@ -130,7 +129,6 @@
     }
 
     .panel {
-      width: 1300px;
       margin-left: auto;
       margin-right: auto;
       margin-top: 7%;
@@ -139,14 +137,12 @@
     .Ruse {
       background-color: black;
       color: red;
-      float: left;
       font-family: 'arial black', 'Franklin Gothic Medium', sans-serif;
     }
 
     .Buse {
       background-color: black;
       color: blue;
-      float: right;
       font-family: 'arial black', 'Franklin Gothic Medium', sans-serif;
     }
 
@@ -182,6 +178,23 @@
       color: #00B7FF;
       border-radius: 50%;
     }
+
+    .chat {
+      text-align: center;
+      margin-left: auto;
+      margin-right: auto;
+      font-weight: 600;
+    }
+
+    .Rchat {
+      border-bottom: black 1px solid;
+      background-color: rgb(253, 193, 193);
+    }
+
+    .Bchat {
+      border-top: black 1px solid;
+      background-color: rgb(193, 193, 253);
+    }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
 </head>
@@ -200,7 +213,7 @@
     <div class="wait"><button id="start" class="start">start</button>
       <div class="latest">
         <div class="info">最新の状況</div>
-        <b id="wait"></b>
+        <b id="wait" class="b"></b>
       </div>
     </div>
   </div>
@@ -222,6 +235,7 @@
         <th id="use" class="use">9</th>
       </tr>
     </table>
+    <div id="pcfalse"></div>
     <table class="Buse">
       <tr>
         <th id="use" class="use">1</th>
@@ -240,6 +254,15 @@
       </tr>
     </table>
   </div>
+  <div id="pctrue"></div>
+  <div id="msg" style="display:none">
+    <button class="msg1" onclick="msg(1)"><b>やった～</b></button>
+    <button class="msg2" onclick="msg(2)"><b>やられたー</b></button>
+    <button class="msg3" onclick="msg(3)"><b>わっはっは</b></button>
+    <button class="msg4" onclick="msg(4)"><b>なんだとっっ</b></button>
+    <button class="msg5" onclick="msg(5)"><b>よろしく！</b></button>
+    <button class="msg6" onclick="msg(6)"><b>ありがとう！</b></button>
+  </div>
 
   <script>
     var socket = io();
@@ -249,6 +272,7 @@
     var turn = 0;
     var my_win = 0;
     var opponent_win = 0;
+    var pc = !navigator.userAgent.match(/(iPhone|iPad|iPod|Android)/);
 
     function d(e) {
       return document.getElementById(e);
@@ -267,11 +291,11 @@
     });
 
     socket.on('wait_name', (wait_name) => {
-      if(d('wait'))d('wait').innerText = `${wait_name} が待っています`;
+      if (d('wait')) d('wait').innerText = `${wait_name} が待っています`;
     });
 
     socket.on('wait_end', () => {
-      if(d('wait'))d('wait').innerText = '待っている人はいません';
+      if (d('wait')) d('wait').innerText = '待っている人はいません';
     });
 
     d('start').onclick = () => {
@@ -288,12 +312,15 @@
     }
 
     socket.on('start', (opponent) => {
-      if (navigator.userAgent.match(/(iPhone|iPad|iPod|Android)/)) {
-        d('style').innerHTML = '<style>.panel{width:254px}</style>';
-      }
+      style();
       opponent_id = opponent[0];
       opponent_name = opponent[1];
       d('panel').style = "";
+      d('msg').style = "";
+      d('pc' + pc).innerHTML = `<div class="chat">
+      <div id="Rchat" class="Rchat">START!</div>
+      <div id="Bchat" class="Bchat">SATRT!</div>
+      </div>`;
       var table = `<table class="table"><tr><th id="Rname" class="Rname" colspan="9"></th></tr>`;
       for (let i = 0; i < 3; i++) {
         table += '<tr>';
@@ -359,7 +386,7 @@
             } else {
               alert('引き分け');
             }
-            d('panel').innerHTML +=
+            d('msg').innerHTML +=
               `<div class="form">
               <form action="/" method="POST">
               <input type="hidden" name="name" value="${name}">
@@ -376,6 +403,104 @@
       }
     }
 
+    function style() {
+      if (pc) {
+        d('style').innerHTML = `<style>
+        body{
+          1300px;
+        }
+        .table{
+          margin-top: 5%;
+        }
+        .panel{
+          width: 1300px;
+        }
+        .Ruse{
+         float: left;
+        }
+        .Buse{
+          float: right;
+        }
+        .chat{
+          font-size: 2em;
+          width: 330px;
+        }
+        .Rchat,.Bchat{
+          height: 40px;
+        }
+        .msg1,.msg2,.msg3,.msg4,.msg5,.msg6{
+          width: 126px;
+          border-radius: 30%;
+          font-size: 17px;
+          margin-top: 15%;
+        }
+        </style>`;
+      } else {
+        d('style').innerHTML = `<style>
+        body{
+          width: 625px;
+        }
+        .panel{
+          width: 254px;
+        }
+        .chat{
+          width: 254px;
+          font-size: 1.4em;
+        }
+        .Rchat,.Bchat{
+          height: 35px;
+        }
+        .msg1,.msg2,.msg3,.msg4,.msg5,.msg6{
+          width: 140px;
+          border-radius: 30%;
+          font-size: 20px;
+        }
+        .msg1,.msg3,.msg5{
+          float: left;
+          margin-left: 20px;
+        }
+        .msg2,.msg4,.msg6{
+          float: right;
+          margin-right: 20px;
+        }
+        .msg1,.msg2{
+          margin-top: -500px;
+        }
+        .msg3,.msg4{
+          margin-top: -300px;
+        }
+        .msg5,.msg6{
+          margin-top: -100px;
+        }
+      </style>`;
+      }
+    }
+
+    function msg(msg) {
+      if (msg === 1) {
+        d('Rchat').innerText = 'やった～';
+        socket.emit('msg', [opponent_id, 'やった～']);
+      } else if (msg === 2) {
+        d('Rchat').innerText = 'やられたー';
+        socket.emit('msg', [opponent_id, 'やられたー']);
+      } else if (msg === 3) {
+        d('Rchat').innerText = 'わっはっは';
+        socket.emit('msg', [opponent_id, 'わっはっは']);
+      } else if (msg === 4) {
+        d('Rchat').innerText = 'なんだとっっ';
+        socket.emit('msg', [opponent_id, 'なんだとっっ']);
+      } else if (msg === 5) {
+        d('Rchat').innerText = 'よろしく！';
+        socket.emit('msg', [opponent_id, 'よろしく！']);
+      } else {
+        d('Rchat').innerText = 'ありがとう！';
+        socket.emit('msg', [opponent_id, 'ありがとう！']);
+      }
+    }
+
+    socket.on('msg', (msg) => {
+      d('Bchat').innerText = msg;
+    });
   </script>
 </body>
 
