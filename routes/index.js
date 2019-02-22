@@ -1,9 +1,9 @@
 var express = require('express');
 var router = express.Router();
-var planjs = require('./plan');
+// var planjs = require('./plan');
 
 router.get('/', function (req, res, next) {
-  res.render('index', { name: '' ,plan:!!planjs.plan.length});
+  res.render('index', { name: '' })//,plan:!!planjs.plan.length});
   res.end();
 });
 
