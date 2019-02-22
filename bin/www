@@ -111,7 +111,7 @@ io.on('connection', (socket) => {
 
   socket.on('cancel', () => {
     wait = false;
-    wait_data = [null, null];;
+    wait_data = [null, null];
     io.emit('wait_end');
   });
 

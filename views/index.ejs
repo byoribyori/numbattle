@@ -2,6 +2,9 @@
 <html>
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>NUMBATTLE</title>
   <style>
     body {
@@ -195,12 +198,31 @@
       border-top: black 1px solid;
       background-color: rgb(193, 193, 253);
     }
+
+    a{
+      margin-top: 10px;
+      color: #00B7FF;
+      float: right;
+      font-size: 1.4em;
+    }
+
+    .img{
+      width: 275px;
+      height: 275px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    img{
+      width: 100%;
+      height: 100%;
+    }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
 </head>
 
 <body>
-  <div id="style"></div>
+  <div id="style"><style>body{width:500px;}</style></div>
   <div id="area">
     <h1>NUMBATTLE</h1>
     <div class="li">
@@ -216,6 +238,11 @@
         <b id="wait" class="b"></b>
       </div>
     </div>
+    <% if(plan) { %>
+      <a href="/plan">予定があります&gt;&gt;</a>
+    <% } else { %>
+      <a href="/plan">予定&gt;&gt;</a>
+    <% } %>
   </div>
   <div id="panel" class="panel" style="display:none">
     <table class="Ruse">
@@ -263,6 +290,7 @@
     <button class="msg5" onclick="msg(5)"><b>よろしく！</b></button>
     <button class="msg6" onclick="msg(6)"><b>ありがとう！</b></button>
   </div>
+  <p class="img" id="img"><img src="../favicon.ico" alt=""></p>
 
   <script>
     var socket = io();
@@ -317,6 +345,7 @@
       opponent_name = opponent[1];
       d('panel').style = "";
       d('msg').style = "";
+      d('img').remove();
       d('pc' + pc).innerHTML = `<div class="chat">
       <div id="Rchat" class="Rchat">START!</div>
       <div id="Bchat" class="Bchat">SATRT!</div>
@@ -501,6 +530,7 @@
     socket.on('msg', (msg) => {
       d('Bchat').innerText = msg;
     });
+
   </script>
 </body>
 
