@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <style>
+    body {
+      background-color: lightblue;
+      width: 300px;
+      margin-right: auto;
+      margin-left: auto;
+    }
+
+    h1 {
+      font-size: 2.2em;
+    }
+
+    a {
+      margin-left: 180px;
+      color: #00B7FF;
+      font-size: 1.6em;
+    }
+
+    .plan {
+      border: 1.3px solid gray;
+      border-radius: 15px;
+      margin-top: 20px;
+    }
+
+    .name {
+      border-bottom: solid gray 1.3px;
+      background-color: gainsboro;
+      border-radius: 15px 15px 0px 0px;
+    }
+
+    .name2,.time2 {
+      margin-left: 15px;
+    }
+
+    .text {
+      background-color: white;
+    }
+
+    .text2 {
+      margin-left: 15px;
+      font-size: 1.1em;
+    }
+
+    .time {
+      border-top: solid gray 1.3px;
+      background-color: gainsboro;
+      border-radius: 0px 0px 15px 15px;
+    }
+  </style>
+  <title>予定</title>
+</head>
+
+<body>
+  <% if(plan.length) { %>
+  <h1>予定一覧</h1>
+  <% } else { %>
+  <h1>予定はありません</h1>
+  <% } %>
+  <a href="/plan/create">予定作成</a><br><br>
+  <% for (i in plan) { %>
+  <div class="plan">
+    <div class="name"><b class="name2"><%- plan[i].user %></b></div>
+    <div class="text">
+      <div class="text2"><%- plan[i].text %></div>
+    </div>
+    <div class="time">
+      <span　class="time2"><%= plan[i].month %>月<%= plan[i].day %>日<%= plan[i].hour %>時<%= plan[i].minute %>分～</span>
+      <span class="button"><button id="<%= plan.[i].id %>">コメントする</button></span></div>
+    <%- plan[i].comment %>
+  </div>
+  <% } %>
+ 
+  <script>
+    document.onclick = (e) => {
+      if (e.target.id) {
+        window.location.href = `/plan/comment/${e.target.id}`;
+      }
+    }
+  </script>
+</body>
+
+</html>

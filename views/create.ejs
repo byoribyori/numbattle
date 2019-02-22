@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <style>
+    body {
+      width: 330px;
+      margin-right: auto;
+      margin-left: auto;
+      background-color: lightblue;
+      font-size: 2em;
+    }
+
+    .time {
+      font-size: 0.8em;
+      width: 60px;
+    }
+
+    textarea {
+      width: 320px;
+      height: 70px;
+      font-size: 0.8em;
+    }
+
+    .user {
+      font-size: 0.8em;
+      width: 320px;
+    }
+
+    .create {
+      float: right;
+      font-size: 0.7em;
+      background-color: pink;
+      border-radius: 8px;
+    }
+  </style>
+  <title>予定作成</title>
+</head>
+
+<body>
+  <form action="/plan/create" method="POST">
+    投稿者:<br><input type="text" class="user" name="user" autocomplete="off"><br>
+    コメント:<br>
+    <textarea name="text"></textarea><br>
+    日にち:<br>
+    <input type="number" class="time" name="month" id="month">月
+    <input type="number" class="time" name="day" id="day">日<br>
+    <input type="number" class="time" name="hour">時
+    <input type="number" class="time" name="minute">分～
+    <input type="submit" class="create" value="作成">
+  </form>
+  <p>※すべて必須<br>日にちは1週間後まで</p>
+  <script>
+  document.getElementById('month').value=new Date().getMonth() + 1;
+  document.getElementById('day').value=new Date().getDate();
+  console.log(new Date().getHours())
+  </script>
+</body>
+
+</html>
