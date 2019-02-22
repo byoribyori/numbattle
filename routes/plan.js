@@ -101,4 +101,4 @@ router.post('/comment', (req, res, next) => {
 });
 
 module.exports = router;
-//module.exports.plan = plan;
+module.exports.plan = plan;
