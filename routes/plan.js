@@ -6,7 +6,7 @@ var plan_id = 0;
 
 router.get('/', (req, res, next) => {
   var now_japan = new Date(new Date().setHours(new Date().getHours() + 9));
-  now_japan.setMinutes(new Date().getMinutes()+20);
+  console.log(now_japan.getTime(), now_japan);
   if (plan.length) {
     var provisional = [];
     for (var b = 0; b < plan.length; b++) {
@@ -36,7 +36,6 @@ router.post('/create', (req, res, next) => {
   var date = new Date(new Date().getFullYear(), Number(month) - 1, day, hour, minute);
   var date2 = new Date(new Date().getFullYear(), Number(month) - 1, day, hour, minute);
   var now_japan = new Date(new Date().setHours(new Date().getHours() + 9));
-  now_japan.setMinutes(new Date().getMinutes()+20);
   date2.setDate(date2.getDate() - 8);
   if (!text || !user || !month || !day || !hour || !minute
     || date.toString() === "Invalid Date" || now_japan > date.getTime() || now_japan < date2.getTime()) {
@@ -88,14 +87,14 @@ router.post('/comment', (req, res, next) => {
   var name = req.body.user;
   var comment = req.body.text;
   var id = req.body.id;
-  if(name&&comment){
-  for (var a = 0; a < plan.length; a++) {
-    if (plan[a].id == id) {
-      plan[a].comment.push(name);
-      plan[a].comment.push(comment);
+  if (name && comment) {
+    for (var a = 0; a < plan.length; a++) {
+      if (plan[a].id == id) {
+        plan[a].comment.push(name);
+        plan[a].comment.push(comment);
+      }
     }
   }
-}
   res.writeHead(302, {
     'Location': '/plan'
   });
@@ -103,4 +102,3 @@ router.post('/comment', (req, res, next) => {
 });
 
 module.exports = router;
-module.exports.plan = plan;
