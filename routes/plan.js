@@ -5,7 +5,8 @@ var plan = [];
 var plan_id = 0;
 
 router.get('/', (req, res, next) => {
-  var now_japan = new Date().setHours(new Date().getHours() + 9);
+  var now_japan = new Date(new Date().setHours(new Date().getHours() + 9));
+  now_japan.setMinutes(new Date().getMinutes()+20);
   if (plan.length) {
     var provisional = [];
     for (var b = 0; b < plan.length; b++) {
@@ -34,7 +35,8 @@ router.post('/create', (req, res, next) => {
   var minute = req.body.minute;
   var date = new Date(new Date().getFullYear(), Number(month) - 1, day, hour, minute);
   var date2 = new Date(new Date().getFullYear(), Number(month) - 1, day, hour, minute);
-  var now_japan = new Date().setHours(new Date().getHours() + 9);
+  var now_japan = new Date(new Date().setHours(new Date().getHours() + 9));
+  now_japan.setMinutes(new Date().getMinutes()+20);
   date2.setDate(date2.getDate() - 8);
   if (!text || !user || !month || !day || !hour || !minute
     || date.toString() === "Invalid Date" || now_japan > date.getTime() || now_japan < date2.getTime()) {
@@ -52,7 +54,7 @@ router.post('/create', (req, res, next) => {
     date: `${date.getMonth() + 1}月${date.getDate()}日${date.getHours()}時${minute}分～`,
     comment: [],
     id: plan_id,
-    timeLimit: date.setHours(date.getHours() + 1)
+    timeLimit: date.setHours(date.getHours() + 1)//date.setMinutes(date.getMinutes() + 1)//
   });
   plan_id++;
   res.writeHead(302, {
