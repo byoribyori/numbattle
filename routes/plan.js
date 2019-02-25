@@ -4,9 +4,8 @@ var router = express();
 var plan = [];
 var plan_id = 0;
 
-router.get('/', (req, res, next) => {
+function delete_date() {
   var now_japan = new Date(new Date().setHours(new Date().getHours() + 9));
-  console.log(now_japan.getTime(), now_japan);
   if (plan.length) {
     var provisional = [];
     for (var b = 0; b < plan.length; b++) {
@@ -16,6 +15,11 @@ router.get('/', (req, res, next) => {
     }
     plan = provisional;
   }
+  module.exports.plan = plan;
+}
+
+router.get('/', (req, res, next) => {
+  delete_date();
   res.render('plan', {
     plan: plan
   });
@@ -102,3 +106,5 @@ router.post('/comment', (req, res, next) => {
 });
 
 module.exports = router;
+module.exports.plan = plan;
+module.exports.delete_date = delete_date;
