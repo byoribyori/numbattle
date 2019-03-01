@@ -10,7 +10,7 @@ var planRouter = require('./routes/plan');
 var app = express();
 
 app.use('/favicon.ico', express.static('./favicon.ico'));
-
+//
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
