@@ -11,7 +11,6 @@ var app = express();
 
 app.use('/favicon.ico', express.static('./favicon.ico'));
 
-// view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
